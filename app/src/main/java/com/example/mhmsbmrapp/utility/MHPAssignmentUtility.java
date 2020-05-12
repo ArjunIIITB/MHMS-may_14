@@ -1,11 +1,8 @@
 package com.example.mhmsbmrapp.utility;
 
 
-
-import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import com.example.mhmsbmrapp.Login.GlobalVariables;
 import com.example.mhmsbmrapp.Login.MHPFlow;
 
@@ -207,6 +204,154 @@ public class MHPAssignmentUtility {
     } //getPatientAge (POST)
 
 
+    public void updateIPPatientQueue(JSONObject patient , JSONObject parentOrg, JSONObject MHP, String loginToken) {
+
+
+        //String time = new Timestamp(System.currentTimeMillis()).toInstant().toString();
+        String time = "1587358504256";
+        final String RELATIVE_PATH = "updateIPPatientQueue/";
+        final MediaType JSON
+                = MediaType.parse("application/json; charset=utf-8");
+
+        JSONObject payload = null;
+
+        try {
+            payload = new JSONObject();
+            //payload.put("patientName", "Mr. Advance Directive");
+            payload.put("patientName", patient.getString("prefix")+" "+patient.getString("givenName")+" "+patient.getString("middleName"));
+            //payload.put("patientPhone", "8404973134");
+            payload.put("patientPhone", patient.getString("phoneNumber"));
+            //payload.put("patientDob", "2000-12-30T18:30:00.000Z");
+            payload.put("patientDob", patient.getString("dateOfBirth"));
+            payload.put("patientCity", patient.getJSONArray("address").getJSONObject(0).getString("city"));
+            //payload.put("patientId", "a7864f44-7ba8-4bfa-b8c2-de9afa84d30d");
+            payload.put("patientId", patient.getString("personId"));
+            //payload.put("userId", "775b8c3e-6742-4b30-b443-c7d6aa6ec4ac");
+            payload.put("userId", MHP.getString("mhpUuid"));
+            //payload.put("assignedMhpId", "775b8c3e-6742-4b30-b443-c7d6aa6ec4ac");
+            payload.put("assignedMhpId", MHP.getString("mhpUuid"));
+            //payload.put("assignedmhpName", "Prashant SinghPrashant SinghPrashant SinghPrashant");
+            payload.put("assignedmhpName", MHP.getString("mhpName"));
+            //payload.put("orgId", "4cc74280-efe5-4016-b41e-f29472a4ec12");
+            payload.put("orgId", MHP.getString("mheUuid"));
+            payload.put("admissionTime", time);
+            payload.put("dischargeTime", "");
+            payload.put("assessmentStaus", "OP");
+            payload.put("admissionStatus", "Waiting");
+            payload.put("capacity", "");
+            payload.put("referredBy", "");
+            payload.put("guardianName", "");
+            payload.put("relation", "");
+            payload.put("guardianPhone", "");
+            //payload.put("mhrbId", "a21b885e-2f3a-4425-8b5b-0d274b42af26");
+            payload.put("mhrbId", parentOrg.getString("parentOrgUuid"));
+        } catch (Exception e) {}
+
+        Log.d("json object", payload.toString());
+        System.out.println(payload.toString());
+
+        RequestBody formBody = RequestBody.create(JSON, payload.toString());
+
+        Request request = new Request.Builder()
+                .url(GlobalVariables.GLOBAL_PATH_REST+RELATIVE_PATH)
+                .post(formBody)
+                .addHeader("Authorization", "Bearer " + loginToken)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        Response response = null;
+
+        try {
+
+
+            response = client.newCall(request).execute();
+            ResponseBody rb = response.body();
+
+            //JSONObject object = new JSONObject(rb.string());
+            System.out.println(rb.string());
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    } // updateIPPatientQueue (POST)
+
+
+    public void updateIPPatientQueue(JSONObject patient , JSONObject parentOrg, JSONObject mhp, String loginToken, String admissionStatus) {
+
+
+        //String time = new Timestamp(System.currentTimeMillis()).toInstant().toString();
+        String time = "1587358504256";
+        final String RELATIVE_PATH = "updateIPPatientQueue/";
+        final MediaType JSON
+                = MediaType.parse("application/json; charset=utf-8");
+
+        JSONObject payload = null;
+
+        try {
+            payload = new JSONObject();
+            //payload.put("patientName", "Mr. Advance Directive");
+            payload.put("patientName", patient.getString("prefix")+" "+patient.getString("givenName")+" "+patient.getString("middleName"));
+            //payload.put("patientPhone", "8404973134");
+            payload.put("patientPhone", patient.getString("phoneNumber"));
+            //payload.put("patientDob", "2000-12-30T18:30:00.000Z");
+            payload.put("patientDob", patient.getString("dateOfBirth"));
+            payload.put("patientCity", patient.getJSONArray("address").getJSONObject(0).getString("city"));
+            //payload.put("patientId", "a7864f44-7ba8-4bfa-b8c2-de9afa84d30d");
+            payload.put("patientId", patient.getString("personId"));
+            //payload.put("userId", "775b8c3e-6742-4b30-b443-c7d6aa6ec4ac");
+            payload.put("userId", mhp.getString("composer_identifier"));
+            //payload.put("assignedMhpId", "775b8c3e-6742-4b30-b443-c7d6aa6ec4ac");
+            payload.put("assignedMhpId", mhp.getString("composer_identifier"));
+            //payload.put("assignedmhpName", "Prashant SinghPrashant SinghPrashant SinghPrashant");
+            payload.put("assignedmhpName", mhp.getString("givenName"));
+            //payload.put("orgId", "4cc74280-efe5-4016-b41e-f29472a4ec12");
+            payload.put("orgId", mhp.getString("facility_identifier"));
+            if(admissionStatus.equals("Waiting"))
+                payload.put("admissionTime", time);
+            if(admissionStatus.equals("Completed"));
+                payload.put("dischargeTime", time);
+            payload.put("assessmentStaus", "OP");
+            payload.put("admissionStatus", admissionStatus);
+            payload.put("capacity", "");
+            payload.put("referredBy", "");
+            payload.put("guardianName", "");
+            payload.put("relation", "");
+            payload.put("guardianPhone", "");
+            //payload.put("mhrbId", "a21b885e-2f3a-4425-8b5b-0d274b42af26");
+            if(admissionStatus.equals("Waiting"))
+                payload.put("mhrbId", parentOrg.getString("parentOrgUuid"));
+        } catch (Exception e) {}
+
+        Log.d("json object", payload.toString());
+        System.out.println(payload.toString());
+
+        RequestBody formBody = RequestBody.create(JSON, payload.toString());
+
+        Request request = new Request.Builder()
+                .url(GlobalVariables.GLOBAL_PATH_REST+RELATIVE_PATH)
+                .post(formBody)
+                .addHeader("Authorization", "Bearer " + loginToken)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        Response response = null;
+
+        try {
+
+
+            response = client.newCall(request).execute();
+            ResponseBody rb = response.body();
+
+            //JSONObject object = new JSONObject(rb.string());
+            System.out.println(rb.string());
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    } // updateIPPatientQueue (POST)
+
 
     public void updateIPPatientQueueWithUserID(JSONObject patient , JSONObject parentOrg, JSONObject MHP, String loginToken, String userUUID) {
 
@@ -280,88 +425,6 @@ public class MHPAssignmentUtility {
 
     } // updateIPPatientQueue (POST)
 
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public JSONObject updateIPPatientQueue(JSONObject patient , JSONObject parentOrg, JSONObject mhp, String loginToken, String admissionStatus) {
-
-
-        //String time = new Timestamp(System.currentTimeMillis()).toInstant().toString();
-        String time = "1587358504256";
-        final String RELATIVE_PATH = "updateIPPatientQueue/";
-        final MediaType JSON
-                = MediaType.parse("application/json; charset=utf-8");
-
-        JSONObject payload = null;
-
-        try {
-            payload = new JSONObject();
-            //payload.put("patientName", "Mr. Advance Directive");
-            payload.put("patientName", patient.getString("prefix")+" "+patient.getString("givenName")+" "+patient.getString("middleName"));
-            //payload.put("patientPhone", "8404973134");
-            payload.put("patientPhone", patient.getString("phoneNumber"));
-            //payload.put("patientDob", "2000-12-30T18:30:00.000Z");
-            payload.put("patientDob", patient.getString("dateOfBirth"));
-            payload.put("patientCity", patient.getJSONArray("address").getJSONObject(0).getString("city"));
-            //payload.put("patientId", "a7864f44-7ba8-4bfa-b8c2-de9afa84d30d");
-            payload.put("patientId", patient.getString("personId"));
-            //payload.put("userId", "775b8c3e-6742-4b30-b443-c7d6aa6ec4ac");
-            payload.put("userId", mhp.getString("composer_identifier"));
-            //payload.put("assignedMhpId", "775b8c3e-6742-4b30-b443-c7d6aa6ec4ac");
-            payload.put("assignedMhpId", mhp.getString("composer_identifier"));
-            //payload.put("assignedmhpName", "Prashant SinghPrashant SinghPrashant SinghPrashant");
-            payload.put("assignedmhpName", mhp.getString("givenName"));
-            //payload.put("orgId", "4cc74280-efe5-4016-b41e-f29472a4ec12");
-            payload.put("orgId", mhp.getString("facility_identifier"));
-            if(admissionStatus.equals("Waiting"))
-                payload.put("admissionTime", time);
-            if(admissionStatus.equals("Completed"));
-                payload.put("dischargeTime", time);
-            payload.put("assessmentStaus", "OP");
-            payload.put("admissionStatus", admissionStatus);
-            payload.put("capacity", "");
-            payload.put("referredBy", "");
-            payload.put("guardianName", "");
-            payload.put("relation", "");
-            payload.put("guardianPhone", "");
-            //payload.put("mhrbId", "a21b885e-2f3a-4425-8b5b-0d274b42af26");
-            if(admissionStatus.equals("Waiting"))
-                payload.put("mhrbId", parentOrg.getString("parentOrgUuid"));
-        } catch (Exception e) {}
-
-        Log.d("json object", payload.toString());
-        System.out.println(payload.toString());
-
-        RequestBody formBody = RequestBody.create(JSON, payload.toString());
-
-        Request request = new Request.Builder()
-                .url(GlobalVariables.GLOBAL_PATH_REST+RELATIVE_PATH)
-                .post(formBody)
-                .addHeader("Authorization", "Bearer " + loginToken)
-                .addHeader("Content-Type", "application/json")
-                .build();
-
-        Response response = null;
-
-        try {
-
-
-            response = client.newCall(request).execute();
-            if(response.code() == 200) {
-                ResponseBody rb = response.body();
-                JSONObject message = new JSONObject(rb.string());
-                Log.e("message", message.toString());
-                if(message.getString("message").equals("Updated successfully.")){
-                    return patient;
-                }
-            }
-
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return null;
-
-    } // updateIPPatientQueue (POST)
 
 
 }

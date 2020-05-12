@@ -23,7 +23,7 @@ public class BmrUtility {
     OkHttpClient client = new OkHttpClient();
 
     public JSONObject getVirtualFolderByPersonId(String loginToken, String patientId, String orgUuid) {
-        System.out.println("inside getVirtualFolderByPersonId");
+        //System.out.println("inside getVirtualFolderByPersonId");
 
         final String RELATIVE_PATH = "getVirtalFolderByPersonId/";
 
@@ -39,7 +39,7 @@ public class BmrUtility {
 
         Response response = null;
         JSONObject returnObject = null;
-        Log.e("brfore try", "before try");
+        //Log.e("brfore try", "before try");
         try {
             response = client.newCall(request).execute();
             ResponseBody rb = response.body();
@@ -59,7 +59,7 @@ public class BmrUtility {
 
         ArrayList<String[][]> list = new ArrayList<String[][]>();
         try {
-            System.out.println(virtualFolder.getJSONArray("children").getJSONObject(0).getJSONObject("virtualFolderData").getJSONArray("data").getJSONObject(0).get("compositionUid"));
+            //System.out.println(virtualFolder.getJSONArray("children").getJSONObject(0).getJSONObject("virtualFolderData").getJSONArray("data").getJSONObject(0).get("compositionUid"));
 
 
             JSONArray children = virtualFolder.getJSONArray("children");
@@ -155,7 +155,7 @@ public class BmrUtility {
                 String name = nameAndTemplateId[i][0];
                 String templateId = nameAndTemplateId[i][1];
                 String compositionIDList = nameAndTemplateId[i][2];
-                System.out.println("check here --------" + name + " " + templateId +" " + compositionIDList);
+                //System.out.println("check here --------" + name + " " + templateId +" " + compositionIDList);
                 JSONObject newComposition = new BmrUtility().getComposition(name, templateId, compositionIDList, patientId, sessionToken, loginToken);
                 //System.out.println("newComposition " +newComposition);
                 if(newComposition != null) {

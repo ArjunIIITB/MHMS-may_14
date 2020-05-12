@@ -1,13 +1,9 @@
 package com.example.mhmsbmrapp.utility;
 
-import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 import com.example.mhmsbmrapp.Login.GlobalVariables;
 import com.example.mhmsbmrapp.model.Composition;
-
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,7 +18,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class BmrCreateCompositionUtility {
 
     OkHttpClient client = new OkHttpClient();
@@ -768,10 +763,10 @@ public class BmrCreateCompositionUtility {
         JSONObject returnObject = null;
         try {
             response = client.newCall(request).execute();
+            if(response.code() != 200)
+                return null;
             ResponseBody rb = response.body();
-            Log.e("why is it null", "");
             returnObject = new JSONObject(rb.string());
-
 
         }catch(Exception e){
             e.printStackTrace();
