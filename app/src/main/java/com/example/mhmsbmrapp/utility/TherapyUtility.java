@@ -19,7 +19,7 @@ import okhttp3.ResponseBody;
 
 public class TherapyUtility {
 
-    OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client = new OkHttpClient();
 
 
     public JSONObject postCall(String loginToken) {

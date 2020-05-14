@@ -137,8 +137,8 @@ public class Out_Completed_list extends Fragment {
                             JSONObject jsonObject = new JSONObject(arr.get(i).toString());
                             //Log.e(i + "", jsonObject.toString());
                             Out_Completed_list_AnimeOpBmrTab anime = new Out_Completed_list_AnimeOpBmrTab();
-                            anime.setName(jsonObject.getString("patientName"));
-                            anime.setCategorie(jsonObject.getString("assignedmhpName"));
+                            anime.setName(jsonObject.getString("patientId"));
+                            anime.setCategorie(jsonObject.getString("patientName"));
                             anime.setDescription(jsonObject.getString("patientPhone"));
                             anime.setRating(jsonObject.getString("admissionStatus"));
                             lstOut_Completed_list_AnimeOpBmrTab.add(anime);

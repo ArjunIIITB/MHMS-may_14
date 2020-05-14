@@ -16,16 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.mhmsbmrapp.DashboardBmr.Out_Patient_Dashboard.activity.OpBmrTab.adapter.RecyclerViewAdapterOpbmrtab;
 import com.example.mhmsbmrapp.DashboardBmr.Out_Patient_Dashboard.activity.OpBmrTab.model.AnimeOpBmrTab;
-import com.example.mhmsbmrapp.DashboardBmr.Out_Patient_Dashboard.model.Anime;
 import com.example.mhmsbmrapp.Login.MHPFlow;
 import com.example.mhmsbmrapp.R;
-import com.example.mhmsbmrapp.model.MHP;
 import com.example.mhmsbmrapp.utility.BmrUtility;
 
 import org.json.JSONArray;
@@ -33,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class FragmenOphistory extends Fragment {

@@ -3,7 +3,8 @@ package com.example.mhmsbmrapp.utility.ip;
 import android.util.Log;
 
 import com.example.mhmsbmrapp.Login.GlobalVariables;
-import com.example.mhmsbmrapp.model.IPBmr;
+import com.example.mhmsbmrapp.model.Composition;
+import com.example.mhmsbmrapp.model.ip.IPBmr;
 import com.example.mhmsbmrapp.utility.PatientUtility;
 
 import org.json.JSONObject;
@@ -643,6 +644,7 @@ public class IPBmrCreateCompositionUtility {
 
     public JSONObject createComposition_EHRC_Diagnosisv0(IPBmr ip, JSONObject compositionCopy, String loginToken, String sessionToken, String personId) {
 
+        Composition returnComposition = null;
         final String RELATIVE_PATH = "createComposition/";
 
         String templateId = "EHRC - Diagnosis.v0";
@@ -677,9 +679,6 @@ public class IPBmrCreateCompositionUtility {
             jsonObject.put("personId", personId);
             jsonObject.put("templateId", templateId);
 
-
-
-
         }catch (Exception e) { e.printStackTrace();}
 
         RequestBody formBody = RequestBody.create(JSON, jsonObject.toString());
@@ -704,6 +703,7 @@ public class IPBmrCreateCompositionUtility {
             e.printStackTrace();
         }
         return returnObject;
+
 
     } //createComposition_EHRC_Diagnosisv0 (POST)
 

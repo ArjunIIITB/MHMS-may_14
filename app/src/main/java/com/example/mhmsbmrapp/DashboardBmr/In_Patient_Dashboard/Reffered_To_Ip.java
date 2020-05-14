@@ -1,6 +1,9 @@
 package com.example.mhmsbmrapp.DashboardBmr.In_Patient_Dashboard;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +21,10 @@ import com.android.volley.toolbox.Volley;
 import com.example.mhmsbmrapp.DashboardBmr.In_Patient_Dashboard.adapter.RecyclerView_Adapter_IpReffered;
 import com.example.mhmsbmrapp.DashboardBmr.In_Patient_Dashboard.model.Anime_Ip_Reffered;
 
+import com.example.mhmsbmrapp.Login.MHPFlow;
 import com.example.mhmsbmrapp.R;
+import com.example.mhmsbmrapp.utility.ip.IPUtility;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,16 +52,55 @@ public class Reffered_To_Ip extends Fragment {
 
         lstAnime_Ip_Reffered = new ArrayList<>() ;
         recyclerView = v.findViewById(R.id.recyclerviewid);
-        jsonrequest();
+        jsonRequest();
 
         //json//
         return v;
     }
-    private void jsonrequest() {
+
+    private void jsonRequest() {
+
+        Thread thread = new Thread(){
+            public void run() {
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                String loginToken = sharedPreferences.getString("loginToken", "");
+                Log.e("loginToken is", loginToken);
+                JSONArray referredPatient = null;
+                JSONObject jsonObject = null;
+                try {
+                    String orgUUID = new JSONObject(MHPFlow.decoded(loginToken)).getString("orgUUID");
+                    referredPatient = new IPUtility().getorgpatientReferredToIP(loginToken, orgUUID);
+                } catch (Exception e) { e.printStackTrace(); }
+                if(referredPatient != null) {
+                    for (int i=0;i<referredPatient.length();i++) {
+                        try {
+                            jsonObject = referredPatient.getJSONObject(i) ;
+                            Anime_Ip_Reffered anime = new Anime_Ip_Reffered() ;
+                            anime.setName(jsonObject.getString("patientName"));
+                            anime.setDescription(jsonObject.getString("patientPhone"));
+                            anime.setRating(jsonObject.getString("referredBy"));
+                            anime.setCategorie(jsonObject.getString("patientDob"));
+                            anime.setStudio(jsonObject.getString("patientCity"));
+                            lstAnime_Ip_Reffered.add(anime);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                setuprecyclerview(lstAnime_Ip_Reffered);
+            }
+        };
+        thread.start();
+    }
+
+   /* private void jsonrequest() {
 
         request = new JsonArrayRequest(JSON_URL, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+
+
 
                 JSONObject jsonObject  = null ;
 
@@ -96,7 +141,7 @@ public class Reffered_To_Ip extends Fragment {
         requestQueue.add(request) ;
 
 
-    }
+    }*/
 
     private void setuprecyclerview(List<Anime_Ip_Reffered> lstAnime_Ip_Reffered) {
 

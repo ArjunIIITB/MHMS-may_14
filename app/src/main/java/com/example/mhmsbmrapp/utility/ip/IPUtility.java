@@ -103,4 +103,71 @@ public class IPUtility {
         return returnObject;
     } //getorgpatientReferredToIP (GET)
 
+    public JSONObject getIPpatient(String loginToken, String patientId) {
+        final String RELATIVE_PATH = "getIPpatient/"+patientId;
+
+
+        Request request = new Request.Builder()
+                .url(GlobalVariables.GLOBAL_PATH_REST+RELATIVE_PATH)
+                .get()
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer "+loginToken)
+                .build();
+
+        Response response = null;
+        JSONObject returnObject = null;
+        try {
+            response = client.newCall(request).execute();
+            ResponseBody rb = response.body();
+            returnObject = new JSONObject(rb.string());
+            //System.out.println(returnObject);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return returnObject;
+    }
+
+    public JSONObject admit(String values[], JSONObject MHP, String loginToken, String patientId, String userUUID){
+        final String RELATIVE_PATH = "updateIPPatientQueue/";
+
+        final MediaType JSON
+                = MediaType.parse("application/json; charset=utf-8");
+
+        JSONObject jsonObject = getIPpatient(loginToken, patientId);
+        int index = 0;
+        try {
+
+            jsonObject.put("admissionStatus", "Admited To IP");
+            jsonObject.put("admissionTime", "2020-05-12T18:30:00.000Z");
+            jsonObject.put("assessmentStatus", "IP");
+            jsonObject.put("assignedMhpId", userUUID);
+            jsonObject.put("assignedmhpName", MHP.getJSONObject("person").getString("givenName"));
+            jsonObject.put("guardianName", values[index++]);
+            jsonObject.put("relation", values[index]);
+
+        }catch (Exception e) {e.printStackTrace();}
+
+        System.out.println(jsonObject.toString());
+        RequestBody formBody = RequestBody.create(JSON, jsonObject.toString());
+
+        Request request = new Request.Builder()
+                .url(GlobalVariables.GLOBAL_PATH_REST+RELATIVE_PATH)
+                .post(formBody)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer "+loginToken)
+                .build();
+
+        Response response = null;
+        JSONObject returnObject = null;
+        try {
+            response = client.newCall(request).execute();
+            ResponseBody rb = response.body();
+            returnObject = new JSONObject(rb.string());
+            //System.out.println(returnObject);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return returnObject;
+    }
+
 }

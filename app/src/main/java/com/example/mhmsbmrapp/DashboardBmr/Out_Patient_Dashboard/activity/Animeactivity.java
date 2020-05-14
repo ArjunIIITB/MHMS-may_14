@@ -1,7 +1,10 @@
 package com.example.mhmsbmrapp.DashboardBmr.Out_Patient_Dashboard.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -39,8 +42,8 @@ public class Animeactivity extends AppCompatActivity {
 
         // hide the default actionbar
 
-
         // Recieve data
+        //SharedPreferences sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
 
         String name  = getIntent().getExtras().getString("anime_givenName");
         String description = getIntent().getExtras().getString("anime_middleName");
@@ -49,6 +52,26 @@ public class Animeactivity extends AppCompatActivity {
         //int nb_episode = getIntent().getExtras().getInt("anime_dateOfBirth") ;
         String rating = getIntent().getExtras().getString("anime_email") ;
         String patientName = getIntent().getExtras().getString("anime_patientName") ;
+
+        Log.e("name", getIntent().getExtras().getString("anime_givenName"));
+        Log.e("----", "-----------------------------------------------");
+        Log.e("----", "-----------------------------------------------");
+        Log.e("----", "-----------------------------------------------");
+        Log.e("----", "-----------------------------------------------");
+        Log.e("----", "-----------------------------------------------");
+        Log.e("----", "-----------------------------------------------");
+        Log.e("----", "-----------------------------------------------");
+        Log.e("----", "-----------------------------------------------");
+        Log.e("----", "-----------------------------------------------");
+        Log.e("----", "-----------------------------------------------");
+        Log.e("anime_personId", "anime_personId");
+
+        System.out.println(description );
+        System.out.println(studio);
+        System.out.println(category);
+        System.out.println(rating);
+        System.out.println(patientName);
+
         //String image_url = getIntent().getExtras().getString("anime_img");
 
         // ini views

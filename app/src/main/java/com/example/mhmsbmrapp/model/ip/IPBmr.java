@@ -1,4 +1,4 @@
-package com.example.mhmsbmrapp.model;
+package com.example.mhmsbmrapp.model.ip;
 
 public class IPBmr {
 

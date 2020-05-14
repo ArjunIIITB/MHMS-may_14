@@ -2,8 +2,11 @@ package com.example.mhmsbmrapp;
 
 import com.example.mhmsbmrapp.Login.GlobalVariables;
 import com.example.mhmsbmrapp.model.Composition;
-import com.example.mhmsbmrapp.model.IPBmr;
+import com.example.mhmsbmrapp.model.ip.IPBmr;
+import com.example.mhmsbmrapp.model.ip.Discharge;
+import com.example.mhmsbmrapp.utility.ip.DischargeIPUtility;
 import com.example.mhmsbmrapp.utility.ip.IPBmrCreateCompositionUtility;
+import com.example.mhmsbmrapp.utility.ip.IPUtility;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,9 +24,9 @@ import okhttp3.ResponseBody;
 
 public class IPBmrCreateUtilityTest {
 
-    private String loginToken = "eyJEZXZlbG9wZWQgQnkiOiJlLUhlYWx0aCBSZXNlYXJjaCBDZW50ZXIsIElJSVQgQmFuZ2Fsb3JlIiwiSG9zdCI6Ikthcm5hdGFrYSBNZW50YWwgSGVhbHRoIE1hbmFnZW1lbnQgU3lzdGVtIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJwcm9mZXNzaW9uIjoiTUhNU1BzeWNoaWF0cmlzdCIsInN1YiI6Ik1ITVMgU2VjdXJpdHkgVG9rZW4iLCJsYXN0TG9naW5PcmdJZCI6ImEyMWI4ODVlLTJmM2EtNDQyNS04YjViLTBkMjc0YjQyYWYyNiIsInNlc3Npb25FbmRUaW1lIjoxNTg5MzM5Mzg1LCJpc3MiOiJLTUhNUyIsInNlc3Npb25TdGFydFRpbWUiOjE1ODkyOTYxODUsInNlc3Npb25JZCI6IjRjOTU1MzJiLTRhMzYtNGE4Mi04ODhjLWI1YTY5MzZkMTg1NSIsInVzZXJOYW1lIjoidGVzdDAwMSIsIm9yZ1VVSUQiOiI0NzQ4ZGFmYy03NDY0LTQ1MzUtOWNkMC0yOWNjNTJlZmNjMGYiLCJuYmYiOjE1ODkyOTYxODUsIm9yZ1JvbGUiOiJNSFJlZ2lzdHJ5UHJvZmVzc2lvbmFsIiwic2Vzc2lvblRva2VuIjoiU2Vzc2lvbklkOjE3Mi4zMS41LjEzI3Rlc3QwMDE6NDc0OGRhZmMtNzQ2NC00NTM1LTljZDAtMjljYzUyZWZjYzBmOk1ITVM6TUhSZWdpc3RyeVByb2Zlc3Npb25hbCMxNTg5Mjk2MTg0NjUwIy05NDM2MjYwNzUjOTI0IiwicGVyc29uSWQiOiI2Yzk4OTFiNC0wNDRlLTQxNjUtYWQ5My0yODllOGM4N2NiZTUiLCJ1c2VyVVVJRCI6Ijk4MDc4ZDEyLTNmZmEtNGU1OC04ZDI3LTgwNTU5Y2VkYjA4MiIsImV4cCI6MTU4OTMzMjE4NSwiaWF0IjoxNTg5Mjk2MTg1fQ.bqVaYhkPnUFblYRREeBXABTgnWlR-L-Aq6M8cPJ6b1c";
-    private String sessionToken = "SessionId:172.31.5.13#test001:4748dafc-7464-4535-9cd0-29cc52efcc0f:MHMS:MHRegistryProfessional#1589296184650#-943626075#924";
-    private String personId = "359f9da6-32ac-47c4-b556-e49cc5fdc016";
+    private String loginToken = "eyJEZXZlbG9wZWQgQnkiOiJlLUhlYWx0aCBSZXNlYXJjaCBDZW50ZXIsIElJSVQgQmFuZ2Fsb3JlIiwiSG9zdCI6Ikthcm5hdGFrYSBNZW50YWwgSGVhbHRoIE1hbmFnZW1lbnQgU3lzdGVtIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJwcm9mZXNzaW9uIjoiTUhNU1BzeWNoaWF0cmlzdCIsInN1YiI6Ik1ITVMgU2VjdXJpdHkgVG9rZW4iLCJsYXN0TG9naW5PcmdJZCI6ImEyMWI4ODVlLTJmM2EtNDQyNS04YjViLTBkMjc0YjQyYWYyNiIsInNlc3Npb25FbmRUaW1lIjoxNTg5NDcxNjc0LCJpc3MiOiJLTUhNUyIsInNlc3Npb25TdGFydFRpbWUiOjE1ODk0Mjg0NzQsInNlc3Npb25JZCI6ImZjNWRlMDYyLTI5YTYtNDEzYy1hOWVhLTY5ZTlmYTkwMTdkMSIsInVzZXJOYW1lIjoidGVzdDAwMSIsIm9yZ1VVSUQiOiI0NzQ4ZGFmYy03NDY0LTQ1MzUtOWNkMC0yOWNjNTJlZmNjMGYiLCJuYmYiOjE1ODk0Mjg0NzQsIm9yZ1JvbGUiOiJNSFJlZ2lzdHJ5UHJvZmVzc2lvbmFsIiwic2Vzc2lvblRva2VuIjoiU2Vzc2lvbklkOjE3Mi4zMS41LjEzI3Rlc3QwMDE6NDc0OGRhZmMtNzQ2NC00NTM1LTljZDAtMjljYzUyZWZjYzBmOk1ITVM6TUhSZWdpc3RyeVByb2Zlc3Npb25hbCMxNTg5NDI4NDc0NTc5Iy0xNzc5Njc2MTE0Izk3NyIsInBlcnNvbklkIjoiNmM5ODkxYjQtMDQ0ZS00MTY1LWFkOTMtMjg5ZThjODdjYmU1IiwidXNlclVVSUQiOiI5ODA3OGQxMi0zZmZhLTRlNTgtOGQyNy04MDU1OWNlZGIwODIiLCJleHAiOjE1ODk0NjQ0NzQsImlhdCI6MTU4OTQyODQ3NH0.2usoCAVg9a1vb_qPgyqOdHI7WyqHK31cfxvKEe_HCis";
+    private String sessionToken = "SessionId:172.31.5.13#test001:4748dafc-7464-4535-9cd0-29cc52efcc0f:MHMS:MHRegistryProfessional#1589428474579#-1779676114#977";
+    private String personId = "bda5cf6c-7562-4da1-bf0d-b17a86cdea81";
     IPBmr ip = new IPBmr();
 
     public void t() {
@@ -113,7 +116,6 @@ public class IPBmrCreateUtilityTest {
     }
 
 
-
     public JSONObject saveAllCompositions(List<Composition> compositionList, String loginToken, String sessionToken) {
 
         OkHttpClient client = new OkHttpClient();
@@ -198,7 +200,51 @@ public class IPBmrCreateUtilityTest {
             composition.put("/territory", "IN");
         } catch(Exception e) {e.printStackTrace();}
         t();
-        System.out.println(new IPBmrCreateCompositionUtility().createComposition_EHRC_Diagnosisv0(ip, composition, loginToken, sessionToken, personId));
+        List<Composition> list = new ArrayList<>();
+        list.add(new DischargeIPUtility().createCompositionEHRC_Discharge_notesv0(null, composition, loginToken, sessionToken, personId));
+        list.add(new DischargeIPUtility().createCompositionEHRC_EHRC_Medication_orderv0(null, composition, loginToken, sessionToken, personId));
+        list.add(new DischargeIPUtility().createCompositionEHRC_EHRC_Service_requestv0(null, composition, loginToken, sessionToken, personId));
+
+        System.out.println(new DischargeIPUtility().saveAllCompositions(list, loginToken, sessionToken, "4748dafc-7464-4535-9cd0-29cc52efcc0f", personId, "98078d12-3ffa-4e58-8d27-80559cedb082"));
+
     }
 
+
+    @Test
+    public void admit() {
+        String userUUID = "98078d12-3ffa-4e58-8d27-80559cedb082";
+        String patientId = "bda5cf6c-7562-4da1-bf0d-b17a86cdea81";
+        String[] values = {"ABCD", "WXYZ"};
+        JSONObject mhp = new IPUtility().getUserInfo(loginToken, userUUID);
+        System.out.println(mhp.toString());
+        System.out.println(new IPUtility().admit(values, mhp, loginToken, patientId, userUUID));
+
+    }
+
+
+    @Test
+    public void discharge() {
+        JSONObject composition = new JSONObject();
+
+        try {
+            composition.put("/composer|identifier", "98078d12-3ffa-4e58-8d27-80559cedb082");
+            composition.put("/composer|name", "test001");
+            composition.put("/context/end_time", "2020-05-09T11:27:42.347Z");
+            composition.put("/context/health_care_facility|identifier", "4748dafc-7464-4535-9cd0-29cc52efcc0f");
+            composition.put("/context/health_care_facility|name", "Establishment One");
+            composition.put("/context/location", "Bengaluru");
+            composition.put("/context/start_time", "2020-05-09T11:27:42.347Z");
+            composition.put("/language", "en");
+            composition.put("/territory", "IN");
+        } catch(Exception e) {e.printStackTrace();}
+
+        Discharge discharge = new Discharge();
+        discharge.setTypeOfDischarge("Discharge At Request");
+        discharge.setConditionAtDischarge("Same");
+        discharge.setConditionDescription("condition description three");
+        discharge.setFollowUpRecommendation("follow up recommendation");
+        discharge.setNameOfDoctor("Doctor One");
+        discharge.setDesignation("designation one two three");
+        new DischargeIPUtility().createCompositionEHRC_Discharge_notesv0(discharge, composition, loginToken, sessionToken, personId);
+    }
 }

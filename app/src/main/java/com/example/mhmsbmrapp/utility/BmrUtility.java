@@ -167,7 +167,7 @@ public class BmrUtility {
     }
 
 
-    public JSONObject createCompositon(String value, String templateId, String loginToken) {
+    public JSONObject createComposition(String value, String templateId, String loginToken) {
 
         final String RELATIVE_PATH = "createComposition/";
 

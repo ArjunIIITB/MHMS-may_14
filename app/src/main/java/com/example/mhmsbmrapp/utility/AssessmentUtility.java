@@ -11,8 +11,10 @@ import com.example.mhmsbmrapp.model.Composition;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -133,6 +135,11 @@ public class AssessmentUtility {
         final MediaType JSON
                 = MediaType.parse("application/json; charset=utf-8");
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        String time = sdf.format(System.currentTimeMillis());
+        //System.out.println(time);
+
         JSONObject jsonObject = new JSONObject();
 
         try {
@@ -161,8 +168,8 @@ public class AssessmentUtility {
 
                 //composition.put("/context/health_care_facility|name", "psm321op");
                 composition.put("/context/health_care_facility|name", values[index]);
-                composition.put("/context/start_time", "2020-05-02T16:39:42.536Z");
-                composition.put("/context/end_time", "2020-05-02T16:39:42.536Z");
+                composition.put("/context/start_time", time);
+                composition.put("/context/end_time", time);
                 composition.put("/context/location", "Bengaluru");
 
             jsonObject.put("composition", composition);
@@ -209,6 +216,11 @@ public class AssessmentUtility {
 
         final MediaType JSON
                 = MediaType.parse("application/json; charset=utf-8");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        String time = sdf.format(System.currentTimeMillis());
+        System.out.println(time);
 
         JSONObject jsonObject = new JSONObject();
 
@@ -276,8 +288,8 @@ public class AssessmentUtility {
                 composition.put("/composer|identifier", userUUID);
                 composition.put("/context/health_care_facility|identifier", orgUUID);
                 composition.put("/context/health_care_facility|name", values[index]);
-                composition.put("/context/start_time", "2020-05-02T16:39:42.536Z");
-                composition.put("/context/end_time", "2020-05-02T16:39:42.536Z");
+                composition.put("/context/start_time", time);
+                composition.put("/context/end_time", time);
                 composition.put("/context/location", "Bengaluru");
 
             jsonObject.put("composition", composition);
@@ -355,8 +367,6 @@ public class AssessmentUtility {
     public JSONObject saveAllAssessmentCompositions(List<Composition> compositionList, String loginToken, String sessionToken, String orgUUID, String patientId, String userUUID) {
         final String RELATIVE_PATH = "saveAllAssessmentCompositions/Assessment";
 
-        //String time = new Timestamp(System.currentTimeMillis()).toInstant().toString();
-
         final MediaType JSON
                 = MediaType.parse("application/json; charset=utf-8");
 
@@ -405,7 +415,6 @@ public class AssessmentUtility {
         try {
             response = client.newCall(request).execute();
             ResponseBody rb = response.body();
-            //Log.e("why is it null", "");
             returnObject = new JSONObject(rb.string());
 
 

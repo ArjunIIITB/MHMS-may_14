@@ -2,6 +2,8 @@ package com.example.mhmsbmrapp.DashboardBmr.Out_Patient_Dashboard.activity.Opbmr
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,8 +57,10 @@ public class Out_Completed_list_RecyclerViewAdapter extends RecyclerView.Adapter
                 i.putExtra("anime_nb_episode",mData.get(viewHolder.getAdapterPosition()).getNb_episode());
                 i.putExtra("anime_rating",mData.get(viewHolder.getAdapterPosition()).getRating());
                 i.putExtra("anime_img",mData.get(viewHolder.getAdapterPosition()).getImage_url());
+                Log.e("------------------", "---------------------------");
+                Log.e("inside oclrva", mData.get(viewHolder.getAdapterPosition()).getName());
+                Log.e("------------------", "---------------------------");
 
-                mContext.startActivity(i);
 
             }
         });

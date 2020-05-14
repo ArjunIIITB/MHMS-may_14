@@ -1,6 +1,8 @@
 package com.example.mhmsbmrapp.DashboardBmr.Out_Patient_Dashboard.activity.OpTherapy;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +25,10 @@ import com.android.volley.toolbox.Volley;
 
 import com.example.mhmsbmrapp.DashboardBmr.Out_Patient_Dashboard.activity.OpTherapy.adapter.RecyclerViewAdapterOpTherapy;
 import com.example.mhmsbmrapp.DashboardBmr.Out_Patient_Dashboard.activity.OpTherapy.model.AnimeOpTherapy;
+import com.example.mhmsbmrapp.Login.MHPFlow;
 import com.example.mhmsbmrapp.R;
+import com.example.mhmsbmrapp.model.Therapy;
+import com.example.mhmsbmrapp.utility.TherapyUtility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,47 +72,67 @@ public class OpTherapyHistory extends Fragment {
 
     private void jsonrequest() {
 
-        request = new JsonArrayRequest(JSON_URL, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
+        Thread thread = new Thread() {
+            public void run() {
 
-                JSONObject jsonObject  = null ;
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                String loginToken = sharedPreferences.getString("loginToken", "");
+                Log.e("loginToken is", loginToken);
+                String sessionToken = sharedPreferences.getString("sessionToken", "");
+                String orgUUID = null;
+                try {
+                    orgUUID = new JSONObject(MHPFlow.decoded(loginToken)).getString("orgUUID");
+                }catch (Exception e) {e.printStackTrace();}
+                String patientId = "a7864f44-7ba8-4bfa-b8c2-de9afa84d30d";
 
-                for (int i = 0 ; i < response.length(); i++ ) {
 
+                ArrayList<List<JSONObject>> returnList;
 
+                System.out.println("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+                List<Therapy> therapyList = new TherapyUtility().getHistory(loginToken, sessionToken, patientId, orgUUID);
+
+                for (Therapy o : therapyList) {
                     try {
-                        jsonObject = response.getJSONObject(i) ;
-                        AnimeOpTherapy anime = new AnimeOpTherapy() ;
-                        anime.setName(jsonObject.getString("name"));
-                        anime.setDescription(jsonObject.getString("description"));
-                        anime.setRating(jsonObject.getString("Rating"));
-                        anime.setCategorie(jsonObject.getString("categorie"));
-                        anime.setNb_episode(jsonObject.getInt("episode"));
-                        anime.setStudio(jsonObject.getString("studio"));
-                        anime.setImage_url(jsonObject.getString("img"));
-                        lstAnimeOpTherapy.add(anime);
+                        AnimeOpTherapy anime = new AnimeOpTherapy();
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                            //JSONObject obj = new JSONObject(item.get(i).toString());
+                            //JSONObject o = obj.getJSONArray("resultSet").getJSONObject(0);
+                            anime.setName(o.getSessionNumber());
+                            anime.setCategorie(o.getObjectiveSession());
+                            anime.setImage_url(o.getSupervisorName());
+                            /*if (o.has("symptomName")) {
+                                System.out.println(i + "  " + o.getString("symptomName"));
+                                anime.setName(o.getString("symptomName"));
+                            }
+                            else if (o.has("diagnosticCertainity")) {
+                                System.out.println(i + "  " + o.getString("diagnosticCertainity"));
+                                System.out.println(i + "  " + o.getString("problemDiagnosis"));
+                                System.out.println(i + "  " + o.getString("problemTerminology"));
+                                anime.setDescription(o.getString("diagnosticCertainity"));
+                            } else if (o.has("clinicalHistory")) {
+                                System.out.println(i + "  " + o.getString("clinicalHistory"));
+                                anime.setRating(o.getString("clinicalHistory"));
+                            } else if (o.has("illnessSummary")) {
+                                System.out.println(i + "  " + o.getString("illnessSummary"));
+                                anime.setCategorie(o.getString("illnessSummary"));
+                            } else if (o.has("clinicalSynopsis")) {
+                                System.out.println(i + "  " + o.getString("clinicalSynopsis"));
+                            } else if (o.has("medicationItem")) {
+                                System.out.println(i + "  " + o.getString("medicationItem"));
+                                System.out.println(i + "  " + o.getString("directionDuration"));
+                                System.out.println(i + "  " + o.getString("overallDirectionDescription"));
+                                System.out.println(i + "  " + o.getString("timingDescription"));
+                            }*/
 
+                        Log.e("message", "next item starts from here onwards");
+                            lstAnimeOpTherapy.add(anime);
+                    }catch (Exception e) {e.printStackTrace();}
 
                 }
-
-                setuprecyclerview(lstAnimeOpTherapy);
-
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-
-        requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(request) ;
+        };
+        thread.start();
+        setuprecyclerview(lstAnimeOpTherapy);
 
 
     }

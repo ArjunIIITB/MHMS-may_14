@@ -60,12 +60,7 @@ public class LoginBmr extends AppCompatActivity {
     private TextView Info;
     private Button Login;
     private ImageView image;
-    private int counter = 5;
     OkHttpClient client = new OkHttpClient();
-
-    /*private final String GlobalVariables = "http://13.126.27.50/MHMS_DEV/user/";
-    private final String GlobalVariablesRest = "http://13.126.27.50/MHMS_DEV/rest/";
-    private final String CORS = "http://13.126.27.50";*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +97,7 @@ public class LoginBmr extends AppCompatActivity {
                         System.out.println(userName+"     --------------------------     " +password);
 
                         String jwtToken = mhpFlow.login(userName, password);
-
+                        System.out.println(jwtToken);
 
                         try {
                             Log.e("try","inside LoginBmr try----------------------------------");
